@@ -8,10 +8,12 @@ const csp = require('./static/csp.json')
 async function fastifySwaggerUi (fastify, opts) {
   fastify.decorate('swaggerCSP', csp)
 
+  const staticPrefix = opts.staticPrefix || '/static'
+
   // if no logo is provided, read default static logo
   let logoContent = opts.logo
   if (logoContent == null) {
-    const bufferLogoContent = await fsPromises.readFile(path.join(__dirname, './static/logo.svg'))
+    const bufferLogoContent = await fsPromises.readFile(path.join(__dirname, staticPrefix, 'logo.svg'))
     logoContent = { type: 'image/svg+xml', content: bufferLogoContent }
   }
 
@@ -22,6 +24,7 @@ async function fastifySwaggerUi (fastify, opts) {
     hooks: opts.uiHooks,
     theme: opts.theme || {},
     logo: logoContent,
+    staticPrefix,
     ...opts
   })
 }
